@@ -75,9 +75,7 @@
 
         // alert("isMobile: " + isMobile() + ", isLandscape: " + isLandscape());
         // alert(window.orientation);
-        if (window.orientation != 0) {
-            alertWarning();
-        }
+        doSomethingWhenResize();
 
         if (isIOS()) {
             window.onorientationchange = () => {
