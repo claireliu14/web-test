@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="fname" name="fname">
+
+    <script>
+        function isMobile() {
+            var userAgent = window.navigator.userAgent,
+                platform = window.navigator.platform,
+                macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+                windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+                iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+                os = null;
+
+            if (macosPlatforms.indexOf(platform) !== -1) {
+                os = 'Mac OS';
+                return false;
+            } else if (iosPlatforms.indexOf(platform) !== -1) {
+                os = 'iOS';
+                return true;
+            } else if (windowsPlatforms.indexOf(platform) !== -1) {
+                os = 'Windows';
+                return false;
+            } else if (/Android/.test(userAgent)) {
+                os = 'Android';
+                return true;
+            } else if (!os && /Linux/.test(platform)) {
+                os = 'Linux';
+                return false;
+            }
+            return false;
+        }
+
+        function isLandscape() {
+            return !window.matchMedia('(min-aspect-ratio: 1/1)').matches;
+        }
+
+        function doSomethingWhenResize() {
+            const isMobileLandscape = this.isMobile() && this.isLandscape();
+            alert("size : " + window.innerHeight + " x " + window.innerWidth + "\n"
+                + "isLandscape: " + this.isLandscape() + ", isMobile: " + this.isMobile()
+            );
+        }
+
+        alert("isMobile: " + isMobile() + ", isLandscape: " + isLandscape());
+
+        window.onorientationchange = (event) => {
+            console.log(event);
+            doSomethingWhenResize();
+        };
+    </script>
+</body>
+
+</html>
