@@ -12,55 +12,85 @@
     <input type="text" id="fname" name="fname">
 
     <script>
-        function isMobile() {
-            var userAgent = window.navigator.userAgent,
-                platform = window.navigator.platform,
-                macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-                windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-                iosPlatforms = ['iPhone', 'iPad', 'iPod'],
-                os = null;
-
-            if (macosPlatforms.indexOf(platform) !== -1) {
-                os = 'Mac OS';
-                return false;
-            } else if (iosPlatforms.indexOf(platform) !== -1) {
-                os = 'iOS';
+        function isIOS() {
+            const os = getOS();
+            if (os === 'iOS') {
                 return true;
-            } else if (windowsPlatforms.indexOf(platform) !== -1) {
-                os = 'Windows';
-                return false;
-            } else if (/Android/.test(userAgent)) {
-                os = 'Android';
-                return true;
-            } else if (!os && /Linux/.test(platform)) {
-                os = 'Linux';
-                return false;
             }
             return false;
         }
 
+        function isMobile() {
+            const os = getOS();
+            if (os === 'Android' || os === 'iOS') {
+                return true;
+            }
+            return false;
+        }
+
+        function getOS() {
+            const userAgent = window.navigator.userAgent,
+                platform = window.navigator.platform,
+                macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+                windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+                iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+            var os = null;
+
+            if (macosPlatforms.indexOf(platform) !== -1) {
+                os = 'Mac OS';
+            } else if (iosPlatforms.indexOf(platform) !== -1) {
+                os = 'iOS';
+            } else if (windowsPlatforms.indexOf(platform) !== -1) {
+                os = 'Windows';
+            } else if (/Android/.test(userAgent)) {
+                os = 'Android';
+            } else if (!os && /Linux/.test(platform)) {
+                os = 'Linux';
+            }
+            return os;
+        }
+
         function isLandscape() {
-            return !window.matchMedia('(min-aspect-ratio: 1/1)').matches;
+            // !window.matchMedia('(min-aspect-ratio: 1/1)').matches
+            // 1. 在 Android 上第一次進到頁面 alert (portrait = true, landscape = false)
+            // 2. 在 iOS Safari 上第一次進到頁面 alert (portrait = true, landscape = false)
+
+            // !window.matchMedia('(orientation: landscape)').matches
+            return window.orientation != 0;
         }
 
         function doSomethingWhenResize() {
             const isMobileLandscape = this.isMobile() && this.isLandscape();
-            alert("size : " + window.innerHeight + " x " + window.innerWidth + "\n"
-                + "isLandscape: " + this.isLandscape() + ", isMobile: " + this.isMobile()
-            );
+            if (isMobileLandscape) {
+                // alert("size : " + window.innerHeight + " x " + window.innerWidth + "\n"
+                //     + "isLandscape: " + this.isLandscape() + ", isMobile: " + this.isMobile()
+                // );
+                alertWarning();
+            }
         }
 
-        alert("isMobile: " + isMobile() + ", isLandscape: " + isLandscape());
+        function alertWarning() {
+            alert("Please keep device portrait to have best experience.");
+        }
 
-        window.onorientationchange = (event) => {
-            console.log(event.target.screen.orientation.angle);
-            const angle = event.target.screen.orientation.angle;
-            // const isMobileLandscape = this.isMobile() && this.isLandscape();
-            alert("size : " + window.innerHeight + " x " + window.innerWidth + "\n"
-                + "isLandscape: " + this.isLandscape() + ", isMobile: " + this.isMobile() + "\n"
-                + "angle: " + angle
-            );
-        };
+        // alert("isMobile: " + isMobile() + ", isLandscape: " + isLandscape());
+        // alert(window.orientation);
+        if (window.orientation != 0) {
+            alertWarning();
+        }
+
+        if (isIOS()) {
+            window.onorientationchange = () => {
+                doSomethingWhenResize();
+            };
+
+        } else {
+            window.onorientationchange = (event) => {
+                // console.log(event.target.screen.orientation.angle);
+                doSomethingWhenResize();
+                // alertWarning();
+            };
+        }
     </script>
 </body>
 
