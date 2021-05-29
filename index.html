@@ -53,8 +53,13 @@
         alert("isMobile: " + isMobile() + ", isLandscape: " + isLandscape());
 
         window.onorientationchange = (event) => {
-            console.log(event);
-            doSomethingWhenResize();
+            console.log(event.target.screen.orientation.angle);
+            const angle = event.target.screen.orientation.angle;
+            // const isMobileLandscape = this.isMobile() && this.isLandscape();
+            alert("size : " + window.innerHeight + " x " + window.innerWidth + "\n"
+                + "isLandscape: " + this.isLandscape() + ", isMobile: " + this.isMobile() + "\n"
+                + "angle: " + angle
+            );
         };
     </script>
 </body>
